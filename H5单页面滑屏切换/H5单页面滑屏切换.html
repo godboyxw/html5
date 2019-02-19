@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>H5单页面滑屏切换</title>
+  <style>
+    .viewport {
+      width: 500%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      display: -webkit-box;
+      backface-visibility: hidden;
+      -webkit-transform: translate3d(0, 0, 0)
+    }
+
+    .pageview {
+      width: 20%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="viewport" id="viewport">
+    <div class="pageview" style="background:red">页面1</div>
+    <div class="pageview" style="background:yellow">页面2</div>
+    <div class="pageview" style="background:blue">页面3</div>
+    <div class="pageview" style="background:pink">页面4</div>
+    <div class="pageview" style="background:orange">页面5</div>
+  </div>
+  <script>
+    document.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      console.log(e)
+    })
+  </script>
+</body>
+
+</html>
