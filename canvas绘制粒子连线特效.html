@@ -32,17 +32,29 @@
   -->
   <canvas id="canvas"></canvas>
   <script>
-    var w, h, num = 250 //定义全局变量
+    let w, h, num = 250 //定义全局变量
     var ctx = canvas.getContext('2d') //画笔
     var data = [] //将循环生产的每个粒子的特性保存在一个全局变量里面，所有函数均可以访问到全局变量  存储粒子的属性数据
-    var clientX, clientY
+    let clientX, clientY
 
+    console.log(w, h)
     //初始化画布属性
     init()
 
     function init() {
       w = canvas.width = window.innerWidth
       h = canvas.height = window.innerHeight
+      window.onresize = function () {
+        w = canvas.width = window.innerWidth
+        h = canvas.height = window.innerHeight
+        //console.log(w, h)
+      }
+      // window.addEventListener('resize', function () {
+      //   w = canvas.width = window.innerWidth
+      //   h = canvas.height = window.innerHeight
+      //   console.log(w, h)
+      // })
+      console.log(w, h)
       //for循环，画指定数量粒子
       for (var i = 0; i < num; i++) {
         //push方法属于栈方法，性能没有下标索引找好
@@ -88,6 +100,7 @@
           }
         }
       }
+      console.log(clientX, clientY)
       for (var j = 0; j < num; j++) {
         if (Math.pow(clientX - data[j].x, 2) + Math.pow(clientY - data[j].y, 2) < 100 * 100) {
           createLine(clientX, clientY, data[j].x, data[j].y)
@@ -113,14 +126,15 @@
       ctx.stroke() //作画
       ctx.restore() //释放路径
     }
-
+    console.log(clientX, clientY)
     //鼠标移入
     document.onmousemove = function (e) {
       //console.log(e)
-      console.log(e.clientX, e.clientY)
+      // console.log(e.clientX, e.clientY)
       clientX = e.clientX
       clientY = e.clientY
     }
+    console.log(clientX, clientY)
   </script>
 </body>
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>setTimeout-animations</title>
+</head>
+
+<body>
+  <div id="test" style="width:0;height:30px;background-color: pink;line-height: 30px;text-align: center">0%</div>
+  <button id="btn">run</button>
+  <script>
+    /**
+        1.获取元素
+        2.定义函数，给元素宽度和内容的偏移量
+        3.定时器执行函数
+      **/
+    var oDiv = document.getElementById('test')
+    var btn = document.getElementById('btn')
+    var timer = null
+    btn.onclick = function () {
+      clearTimeout(timer)
+      oDiv.style.width = '0'
+      var timer = setTimeout(function animations() {
+        if (parseInt(oDiv.style.width) < 500) {
+          oDiv.style.width = parseInt(oDiv.style.width) + 5 + 'px'
+          oDiv.textContent = parseInt(oDiv.style.width) / 5 + '%'
+          timer = setTimeout(animations, 1000 / 60)
+        } else {
+          clearTimeout(timer)
+        }
+      }, 1000 / 60)
+    }
+  </script>
+</body>
+
+</html>

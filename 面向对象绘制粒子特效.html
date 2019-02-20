@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>面向对象绘制粒子特效</title>
+  <style>
+    body {
+      margin: 0
+    }
+
+    #canvas {
+      display: block;
+      background-color: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    var w, h, num = 250
+    var dataArr = []
+    var clientX, clientY
+    var ctx = canvas.getContext('2d')
+    let random = (min, max) => {
+      return ~~(Math.random() * (max - min) + min)
+    }
+    let ischeck = false
+    w = canvas.width = window.innerWidth
+    h = canvas.height = window.innerHeight
+    window.onresize = function () {
+      w = canvas.width = window.innerWidth
+      h = canvas.height = window.innerHeight
+    }
+    console.log(w, h)
+
+    function Arc() {
+      this.x = random(0, w)
+      this.y = random(0, h)
+      this.vx = Math.random() - 0.5
+      this.vy = Math.random() - 0.5
+    }
+    Arc.prototype.createArc = function () {
+      ctx.save()
+      ctx.beginPath()
+      ctx.arc(this.x, this.y, 3, 0, 2 * Math.PI, true) //this指向调用他的那个实例
+      ctx.fillStyle = 'pink'
+      ctx.fill()
+      ctx.closePath()
+      ctx.restore()
+      this.x += this.vx
+      this.y += this.vy
+      if (this.x < 0 || this.x > w) this.vx = -this.vx
+      if (this.y < 0 || this.y > h) this.vy = -this.vy
+    }
+    // Arc.prototype.move = function () {
+    //   this.x += this.vx
+    //   this.y += this.vy
+    // }
+    function createLine(x1, y1, x2, y2) {
+      ctx.save()
+      var lin = ctx.createLinearGradient(x1, y1, x2, y2)
+      lin.addColorStop(0, 'red')
+      lin.addColorStop(1, 'blue')
+      ctx.lineWidth = 1.5
+      ctx.strokeStyle = lin
+      ctx.beginPath()
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+      ctx.stroke()
+      ctx.closePath()
+      ctx.restore()
+    }
+
+    //初始化点数
+    for (var i = 0; i < num; i++) {
+      let arc = new Arc()
+      console.log(arc)
+      // dataArr[i] = {
+      //   x: arc.x,
+      //   y: arc.y
+      // }
+      dataArr.push(arc) //收集这些实例，便于后续监控处理
+      arc.createArc()
+    }
+    console.log(dataArr)
+
+    function animations() {
+      ctx.clearRect(0, 0, w, h)
+      for (let i = 0; i < num; i++) {
+        //let arc = new Arc()
+        let arc = dataArr[i] //调用之前实例化的实例
+        arc.createArc()
+        for (let j = i + 1; j < num; j++) {
+          let arc2 = dataArr[j]
+          if (Math.pow(arc.x - arc2.x, 2) + Math.pow(arc.y - arc2.y, 2) < 100 * 100) {
+            createLine(arc.x, arc.y, arc2.x, arc2.y)
+          }
+        }
+        if (Math.pow(arc.x - clientX, 2) + Math.pow(arc.y - clientY, 2) < 100 * 100) {
+          createLine(arc.x, arc.y, clientX, clientY)
+        }
+      }
+      //console.log(clientX, clientY)
+      requestAnimationFrame(animations)
+      //setTimeout(animations, 1000 / 60)
+    }
+    requestAnimationFrame(animations)
+    //setTimeout(animations, 1000 / 60)
+    animations()
+    // setInterval(function () {
+    //   animations()
+    // }, 1000 / 60)
+    //setInterval(animations, 1000 / 60)
+    //requestAnimationFrame()请求动画帧的兼容IE9及以下写法
+    window.requestAnimationFrame = window.requestAnimationFrame || function (fn) {
+      return setTimeout(fn, 1000 / 60)
+    }
+
+    function addEvent() {
+      if (document.addEventListener) {
+        return function (obj, eventname, eventfn) {
+          obj.addEventListener(eventname, eventfn)
+        }
+      }
+      return function (obj, eventname, eventfn) {
+        obj.attachEvent('on' + eventname, eventfn)
+      }
+    }
+    var test = addEvent()
+    console.log(test) //ƒ (obj, eventname, eventfn) {obj.addEventListener(eventname, eventfn)}
+    test(document, 'mousemove', function move(ev) {
+      ischeck = true
+      ev = ev || window.event
+      clientX = ev.clientX
+      clientY = ev.clientY
+      //console.log(clientX, clientY)
+    })
+    console.log(clientX, clientY)
+    test(document, 'mouseleave', function leave() {
+      ischeck = false
+    })
+    test(document, 'mouseenter', function enter() {
+      ischeck = true
+    })
+    // document.onmousemove = function (e) {
+    //   clientX = e.clientX
+    //   clientY = e.clientY
+    // }
+    // console.log(clientX, clientY)
+    test(window, 'resize', function resize() {
+      canvas.width = w = document.documentElement.clientWidth
+      canvas.height = h = document.documentElement.clientHeight
+    })
+  </script>
+</body>
+
+</html>
